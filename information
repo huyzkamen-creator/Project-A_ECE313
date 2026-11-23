@@ -1,0 +1,153 @@
+MPS PA Mixing Learning System (Process Automation)
+
+• Purpose: Teaches liquid mixing recipes and closed-loop process control as a standalone or modular station.
+• Process: Liquid is pumped from three reservoir tanks into a main mixing tank via controlled two-way ball valves at a constant flow rate. After mixing, a second pump transfers the batch to the next station or recirculates it back to the reservoirs.
+• Key Components & Controls:
+	• Electromagnetic flow sensor (0–10 V signal) and variable-area flowmeter (rotameter)
+	• Container overflow/level sensors and integrated comparator for binary actuation
+	• Analog pump controller supporting two-point, P, PI, and PID control (often paired with a PLC/HMI or MATLAB/Simulink)
+  1. Hệ thống Bể chứa & Đường ống
+
+• 3 bể chứa nguyên liệu (Reservoir tanks): Chứa ba loại chất lỏng riêng biệt để pha trộn theo công thức.
+• 1 bể trộn chính (Main mixing tank): Nơi tập trung và khuấy trộn các nguyên liệu từ 3 bể chứa.
+• Hệ thống đường ống và khớp nối: Dẫn chất lỏng khép kín giữa các bể hoặc chuyển sang trạm kế tiếp (như trạm Lò phản ứng - Reactor).
+
+2. Cơ cấu Chấp hành (Actuators)
+
+• Van bi 2 ngả (Two-way ball valves): Đóng/mở tuyến tính hoặc đóng ngắt (thường điều khiển bằng bộ truyền động khí nén) để cấp chất lỏng từ từng bể nguyên liệu vào bể trộn.
+• Bơm cấp liệu (Dosing pump): Bơm chất lỏng từ bể chứa vào bể trộn với tốc độ điều chỉnh được thông qua tín hiệu tương tự (analog) để giữ lưu lượng ổn định.
+• Bơm xả/chuyển trạm (Transfer pump): Bơm hỗn hợp đã pha xong sang trạm tiếp theo hoặc bơm tuần hoàn ngược lại bể chứa.
+• Cơ cấu khuấy (Agitator/Mixer): Trộn đều các thành phần trong bể trộn chính (tùy cấu hình mở rộng).
+
+3. Hệ thống Cảm biến & Đo lường (Sensors)
+
+• Cảm biến lưu lượng điện từ (Electromagnetic flow sensor): Đo lưu lượng dòng chảy thực tế và xuất tín hiệu chuẩn 0 – 10 V về bộ điều khiển.
+• Lưu lượng kế diện tích thay đổi (Variable-area flowmeter / Rotameter): Hiển thị trực quan lưu lượng dòng chảy bằng mắt thường.
+• Cảm biến mức chống tràn (Level / Overflow sensors): Gắn trên từng bể chứa (thường là cảm biến điện dung hoặc phao báo mức) để ngăn ngừa tràn bể và báo cạn.
+
+4. Khối Điều khiển & Giao tiếp (Control & Interface)
+
+• Bộ điều khiển bơm & Bộ so sánh tích hợp (Pump controller & Comparator): Hỗ trợ điều khiển vòng kín (2 điểm, P, PI, PID) hoặc kích hoạt nhị phân (binary).
+• Khung tủ điện 19" & Nguồn 24V DC: Tích hợp bảng giao tiếp I/O (chuẩn SysLink / IEEE 488), nút nhấn điều khiển tại chỗ và đèn báo.
+• Bộ lập trình PLC / Giao diện PC (Tùy chọn đi kèm): Thường sử dụng EduTrainer Siemens S7-1500 hoặc giao diện EasyPort USB để kết nối với phần mềm mô phỏng/điều khiển FluidLab-PA.
+2. Bảng giải mã ký hiệu thiết bị trên bản vẽ P&ID
+
+Ký hiệu (Tag)Tên thiết bịChức năng trên sơ đồB101, B102, B103Bể chứa nguyên liệu (Reservoir tanks)3 bể chứa thành phần đầu vào riêng biệtB104Bể trộn chính (Mixing tank)Bể trung tâm tiếp nhận và khuấy trộn theo công thứcV101, V102, V103Van bi 2 ngả điều khiển (Ball valves)Đóng/mở chọn đường cấp từ từng bể nguyên liệuP101Bơm cấp liệu (Dosing pump)Bơm chất lỏng vào bể trộn, điều khiển tốc độ tuyến tínhFIR101 / FI102Cảm biến lưu lượng điện từ & RotameterĐo và hiển thị lưu lượng thực tế (hồi tiếp 0–10 V)LSL / LSH / LAHCảm biến báo mức (Level switches)Giám sát mức cạn (Low), mức cao (High) và chống tràn (Alarm)P102Bơm xả / chuyển trạm (Transfer pump)Bơm hỗn hợp sau trộn đi tuần hoàn hoặc sang trạm kế tiếpV104, V105Van chuyển hướng đầu raChọn chế độ chạy tuần hoàn khép kín hoặc xuất sản phẩm
+
+3. Hai mạch vòng điều khiển chính trên P&ID
+
+Vòng điều khiển lưu lượng (Flow Control Loop - FIC): Tín hiệu từ cảm biến lưu lượng FIR101 đưa về bộ điều khiển PID để điều chỉnh tốc độ Bơm P101, giữ lưu lượng nạp vào bể B104 ổn định theo giá trị đặt (Setpoint).
+
+Mạch điều khiển tuần tự theo công thức (Batch Sequence): Hệ thống lần lượt mở từng van V101 → V102 → V103 theo thể tích/thời gian định sẵn dựa trên tích phân lưu lượng, sau đó kích hoạt khuấy trộn và bơm xả P102.
+2. Bảng giải mã ký hiệu thiết bị trên bản vẽ P&ID
+
+
+Ký hiệu (Tag)	Tên thiết bị	Chức năng trên sơ đồ
+B101, B102, B103	Bể chứa nguyên liệu (Reservoir tanks)	3 bể chứa thành phần đầu vào riêng biệt
+B104	Bể trộn chính (Mixing tank)	Bể trung tâm tiếp nhận và khuấy trộn theo công thức
+V101, V102, V103	Van bi 2 ngả điều khiển (Ball valves)	Đóng/mở chọn đường cấp từ từng bể nguyên liệu
+P101	Bơm cấp liệu (Dosing pump)	Bơm chất lỏng vào bể trộn, điều khiển tốc độ tuyến tính
+FIR101 / FI102	Cảm biến lưu lượng điện từ & Rotameter	Đo và hiển thị lưu lượng thực tế (hồi tiếp 0–10 V)
+LSL / LSH / LAH	Cảm biến báo mức (Level switches)	Giám sát mức cạn (Low), mức cao (High) và chống tràn (Alarm)
+P102	Bơm xả / chuyển trạm (Transfer pump)	Bơm hỗn hợp sau trộn đi tuần hoàn hoặc sang trạm kế tiếp
+V104, V105	Van chuyển hướng đầu ra	Chọn chế độ chạy tuần hoàn khép kín hoặc xuất sản phẩm
+
+
+3. Hai mạch vòng điều khiển chính trên P&ID
+
+• Vòng điều khiển lưu lượng (Flow Control Loop - FIC): Tín hiệu từ cảm biến lưu lượng FIR101 đưa về bộ điều khiển PID để điều chỉnh tốc độ Bơm P101, giữ lưu lượng nạp vào bể B104 ổn định theo giá trị đặt (Setpoint).
+• Mạch điều khiển tuần tự theo công thức (Batch Sequence): Hệ thống lần lượt mở từng van V101 → V102 → V103 theo thể tích/thời gian định sẵn dựa trên tích phân lưu lượng, sau đó kích hoạt khuấy trộn và bơm xả P102.
+1. Thông số chung toàn trạm (General System Data)
+
+Nguồn điện cấp: 24 V DC (dòng định mức khoảng 4 A – 4.5 A). [1]
+
+Áp suất khí nén vận hành: 600 kPa (6 bar), sử dụng ống khí tiêu chuẩn đường kính ngoài 6 mm (để đóng/mở cụm van bi khí nén). [1]
+
+Áp suất làm việc đường ống chất lỏng: Tối đa 50 kPa (0.5 bar). [1]
+
+Dung tích bể chứa: 3 bể nguyên liệu + 1 bể trộn chính (thể tích tiêu chuẩn ~10 lít/bể). [1, 2]
+
+Giao tiếp tín hiệu điều khiển:
+
+Digital I/O: Giắc cắm 24-pin chuẩn IEEE 488 (SysLink), mức logic 24 V DC.
+
+Analog I/O: Giắc cắm 15-pin D-Sub, chuẩn tín hiệu 0 – 10 V. [1, 2, 3]
+
+Kích thước tổng thể (Dài × Rộng × Cao): ~700 × 700 × 907 mm (chưa bao gồm khung xe đẩy Trolley 541139). [1, 2]
+
+2. Thông số kỹ thuật từng cụm linh kiện chính
+
+Nhóm thiết bịTên linh kiệnThông số kỹ thuật (Datasheet)Cơ cấu chấp hànhBơm cấp liệu & Bơm xả (Centrifugal Pumps)• Điện áp: 24 V DC
+• Lưu lượng tối đa: ~5 – 10 lít/phút (tùy cột áp)
+• Điều khiển tốc độ: Tín hiệu tương tự 0 – 10 V qua bộ khuếch đại công suất tích hợpCơ cấu chấp hànhVan bi 2 ngả điều khiển khí nén (Festo VZBA Series)• Kiểu tác động: Bộ truyền động quay 90° khí nén
+• Áp suất điều khiển: 6 bar (qua van điện từ 24 V DC)
+• Vật liệu thân van: Thép không gỉ (Inox 316L) chịu hóa chất nhẹCảm biếnCảm biến lưu lượng điện từ (Electromagnetic Flow Sensor)• Nguyên lý: Cảm ứng điện từ (Magnetic-inductive)
+• Dải đo: 0.1 – 25 lít/phút (hoặc 0 – 10 lít/phút tùy đời trạm)
+• Tín hiệu ngõ ra: Analog 0 – 10 V (kèm màn hình hiển thị số tại chỗ)Cảm biếnLưu lượng kế diện tích thay đổi (Rotameter)• Nguyên lý: Phao cơ học trong ống thủy tinh/nhựa trong suốt
+• Chức năng: Đọc trực quan lưu lượng tức thời (lít/phút)Cảm biếnCảm biến báo mức & Chống tràn (Level Sensors)• Loại cảm biến: Cảm biến tiệm cận điện dung (Capacitive) & Công tắc phao (Float switch)
+• Ngõ ra: Tín hiệu số 24 V DC (PNP) báo mức cao/thấp/tràn bểĐiều khiểnBộ điều khiển & Phần mềm đi kèm• Bộ điều khiển: EduTrainer SIMATIC S7-1512C-1PN + màn hình HMI MTP700
+• Giao diện PC: EasyPort USB (8021637) chạy phần mềm FluidLab-PA Closed-Loop
+Chân (Pin)	Kênh	Tín hiệu	Chức năng trên Trạm Trộn (MPS PA Mixing)
+1	AI 0 (+)	0 – 10 V DC	Tín hiệu hồi tiếp Cảm biến lưu lượng điện từ (FIR101)
+2	AI 0 (-)	0 V (GND)	Mass tham chiếu cho kênh AI 0
+3	AI 1 (+)	0 – 10 V DC	Tín hiệu hồi tiếp Cảm biến mức liên tục / Áp suất (tùy chọn mở rộng)
+4	AI 1 (-)	0 V (GND)	Mass tham chiếu cho kênh AI 1
+5 – 8	AI 2 / AI 3	0 – 10 V DC	Các kênh ngõ vào tương tự dự phòng
+9	AO 0 (+)	0 – 10 V DC	Tín hiệu điều khiển tốc độ Bơm định lượng (P101)
+10	AO 0 (-)	0 V (GND)	Mass tham chiếu cho ngõ ra AO 0
+11 – 12	AO 1 (+/-)	0 – 10 V DC	Ngõ ra tương tự dự phòng
+13	+24V DC	24 V DC	Nguồn nuôi mạch giao tiếp Analog
+14, 15	0V DC	0 V (GND)	Mass nguồn chung (Shield / Ground)
+
+
+Lưu ý khi đấu nối thực tế
+
+• Phân biệt 2 cổng SysLink: Trên tủ điều khiển trạm trộn có 2 cổng SysLink 24 chân: XD1 dành cho các thiết bị chấp hành/cảm biến của trạm (bảng trên), và XD2 dành riêng cho bảng nút nhấn điều khiển (Control Panel).
+• Cáp thẳng vs Cáp chéo: Khi nối trực tiếp với PLC Siemens (thông qua module giao tiếp trên EduTrainer), sử dụng cáp SysLink nối thẳng (Parallel - mã 34031) và cáp Analog D-Sub 15 chân nối thẳng.
+Tên biến (PLC Tag)	Địa chỉ mặc định	Kiểu dữ liệu	Cổng kết nối	Quy đổi giá trị (Scaling)
+AI_Flow_FIR101	%IW64 (hoặc %IW10)	Int	D-Sub Pin 1	0 – 27648 ↔ 0 – 10 V ↔ 0.0 – 10.0 L/min (lưu lượng thực)
+AI_Level_Cont	%IW66 (hoặc %IW12)	Int	D-Sub Pin 3	0 – 27648 ↔ 0 – 10 V ↔ 0 – 100 % (mức chất lỏng liên tục)
+AQ_Pump_P101	%QW64 (hoặc %QW10)	Int	D-Sub Pin 9	0 – 27648 ↔ 0 – 10 V ↔ 0 – 100 % tốc độ Bơm định lượng P101
+
+
+3. Cấu hình khối điều khiển PID & Scaling trong TIA Portal
+
+• Đọc lưu lượng thực (NORM_X & SCALE_X):
+	• Dùng khối NORM_X (MIN = 0, MAX = 27648) chuyển đổi %IW64 sang số thực chuẩn hóa 0.0 – 1.0.
+	• Dùng khối SCALE_X (MIN = 0.0, MAX = 10.0 L/min) để lấy giá trị lưu lượng thực tế đưa vào chân Input của bộ điều khiển PID.
+• Khối hàm PID chuẩn trên S7-1500:
+	• Sử dụng khối PID_Compact đặt trong ngắt chu kỳ Cyclic Interrupt (OB30) (chu kỳ gọi mặc định 100 ms).
+	• Cấu hình kiểu ngõ ra của PID_Compact là Output (Real, 0.0 – 100.0 %) hoặc Output_PER (Int, 0 – 27648) nối thẳng ra địa chỉ %QW64 điều khiển tốc độ bơm P101.
+1. Kiến trúc kết nối vật lý (PROFINET / Industrial Ethernet)
+
+• Hạ tầng mạng: Kết nối trực tiếp cổng PROFINET (X1 P1/P2) trên CPU S7-1512C-1PN với máy tính chạy SCADA (và màn hình HMI cục bộ như MTP700/KTP700 nếu có) thông qua một bộ chia mạng công nghiệp (Industrial Ethernet Switch).
+• Địa chỉ IP chuẩn: Đặt cùng dải mạng tĩnh (ví dụ: PLC 192.168.0.1, PC SCADA 192.168.0.10, Subnet 255.255.255.0).
+• Cấu hình bảo mật trên S7-1500: Trong phần cứng TIA Portal (Protection & Security), cần bật quyền PUT/GET communication (nếu kết nối WinCC đời cũ/S7-Protocol) hoặc bật OPC UA Server ngay trên CPU S7-1500 để truyền dữ liệu chuẩn công nghiệp không cần driver trung gian.
+
+2. Tổ chức Data Block (DB) chuẩn hóa cho SCADA
+
+Thay vì để SCADA đọc trực tiếp vùng nhớ I/Q/M rời rạc, bạn nên tạo một khối dữ liệu tập trung (ví dụ: DB_SCADA_Interface) đã tắt thuộc tính Optimized block access (nếu dùng kết nối địa chỉ tuyệt đối) hoặc giữ nguyên Symbolic access (nếu dùng WinCC Unified / OPC UA):
+• Nhóm Trạng thái & Giám sát (PLC → SCADA):
+	• Actual_Flow (Real): Lưu lượng thực tế (L/min) đọc từ cảm biến FIR101.
+	• Total_Volume_B104 (Real): Tổng thể tích đã bơm vào bể trộn (tính bằng tích phân lưu lượng theo thời gian).
+	• Pump_P101_Speed_FB (Real): Tốc độ thực tế bơm định lượng (0 – 100 %).
+	• Valve_Status_Word (Word): Mã hóa trạng thái đóng/mở của các van V101–V105 và bơm P102 để đổi màu động trên sơ đồ P&ID.
+	• Alarm_Word (Word): Các bit cảnh báo tràn bể (LAH), cạn bể (LSL), lỗi quá nhiệt bơm, mất áp suất khí nén.
+• Nhóm Điều khiển & Công thức (SCADA → PLC):
+	• CMD_Start, CMD_Stop, CMD_Reset (Bool): Lệnh vận hành từ xa trên giao diện SCADA (nên dùng cơ chế SetBitWhileKeyPressed hoặc xung sườn lên rồi tự xóa bit trong PLC để tránh kẹt nút).
+	• Mode_Auto_Man (Bool): Chuyển chế độ tự động hoặc điều khiển từng van/bơm bằng tay trên SCADA.
+	• Setpoint_Flow (Real): Lưu lượng đặt cho bộ điều khiển PID (L/min).
+	• Recipe_Vol_Tank1, Recipe_Vol_Tank2, Recipe_Vol_Tank3 (Real): Thể tích định lượng từng thành phần cho mẻ trộn.
+	• PID_Kp, PID_Ti, PID_Td (Real): Tham số chỉnh định trực tiếp bộ PID_Compact từ màn hình kỹ thuật SCADA.
+
+3. Thiết kế các phân hệ chức năng trên giao diện SCADA
+
+1. Màn hình Tổng quan P&ID (Process Overview):
+	• Mô phỏng trực quan 3 bể nguyên liệu (B101–B103), bể trộn (B104), đường ống đổi màu theo dòng chảy, trạng thái đóng/mở của van bi và hiệu ứng quay của bơm P101, P102.
+• Cho phép click trực tiếp vào từng van/bơm để mở cửa sổ Faceplate điều khiển tay (Manual Override) khi bảo trì.
+2. Quản lý Công thức pha trộn (Recipe Management):
+	• Dùng tính năng Recipes / Parameter Sets tích hợp sẵn trong WinCC để lưu các công thức pha trộn mẫu (ví dụ: Công thức A: 40% Bể 1 + 40% Bể 2 + 20% Bể 3) và tải xuống PLC chỉ bằng một nút nhấn.
+3. Đồ thị xu hướng thời gian thực (Trend View & PID Tuning):
+	• Vẽ biểu đồ theo dõi đồng thời 3 đường: Giá trị đặt (Setpoint_Flow), Lưu lượng thực (Actual_Flow), và Tín hiệu điều khiển bơm (Output_PID) để đánh giá độ vọt lố (overshoot) và thời gian xác lập của hệ thống.
+4. Hệ thống Cảnh báo & Lưu trữ dữ liệu (Alarm Logging & Historical Data):
+	• Ghi nhận lịch sử mẻ trộn (thời gian bắt đầu/kết thúc, tổng thể tích thực tế từng thành phần, cảnh báo tràn bể) xuất ra file .CSV hoặc cơ sở dữ liệu SQL để truy xuất báo cáo.

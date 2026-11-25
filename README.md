@@ -7,7 +7,8 @@ Dự án điều khiển trạm phối trộn Festo bằng PLC Siemens S7-1500 v
 | Project để mở bằng TIA Portal V20 | [PROJECT A.zip](project/tia-portal/PROJECT%20A.zip) |
 | Báo cáo Week 7 | [PDF](reports/week-07/ECE313_Week07_Progress_Report.pdf) · [Word](reports/week-07/ECE313_Week07_Progress_Report.docx) |
 | Báo cáo Week 4–6 | [Week 4](reports/week-04) · [Week 5](reports/week-05) · [Week 6](reports/week-06) |
-| Báo cáo cuối kỳ và các bản nháp | [Final](reports/final) · [Bản nháp](reports/drafts) |
+| Báo cáo cuối kỳ Week 8 | [PDF](reports/final/ECE313_Final_Project_A_Verified_Sources.pdf) · [Word](reports/final/ECE313_Final_Project_A_Verified_Sources.docx) |
+| Các bản nháp trước đây | [Bản nháp](reports/drafts) |
 | Ảnh thiết bị, sơ đồ và ảnh chụp màn hình | [Assets](assets) |
 | Tài liệu của trường, hướng dẫn Festo và báo cáo tham khảo | [References](references) |
 

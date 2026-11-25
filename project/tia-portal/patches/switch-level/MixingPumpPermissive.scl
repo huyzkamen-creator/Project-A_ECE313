@@ -1,0 +1,66 @@
+FUNCTION "MixingPumpPermissive" : Void
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      StopOK : Bool;
+      ModeChanged : Bool;
+      ManualMode : Bool;
+      AutoB201 : Bool;
+      AutoB202 : Bool;
+      AutoB203 : Bool;
+      ManualB201 : Bool;
+      ManualB202 : Bool;
+      ManualB203 : Bool;
+      ReturnRequest : Bool;
+      B201Available : Bool;
+      B202Available : Bool;
+      B203Available : Bool;
+      B204Available : Bool;
+      B204High : Bool;
+      B201High : Bool;
+      AnalogDemand : Int;
+   END_VAR
+   VAR_OUTPUT
+      ValveB201 : Bool;
+      ValveB202 : Bool;
+      ValveB203 : Bool;
+      FeedPump : Bool;
+      ReturnPump : Bool;
+      AnalogOutput : Int;
+      AbortDose : Bool;
+      AbortReturn : Bool;
+   END_VAR
+   VAR_TEMP
+      ReqB201 : Bool;
+      ReqB202 : Bool;
+      ReqB203 : Bool;
+      AnyDose : Bool;
+      MultipleSources : Bool;
+      SourceDry : Bool;
+   END_VAR
+BEGIN
+   #ReqB201 := (#ManualMode AND #ManualB201) OR (NOT #ManualMode AND #AutoB201);
+   #ReqB202 := (#ManualMode AND #ManualB202) OR (NOT #ManualMode AND #AutoB202);
+   #ReqB203 := (#ManualMode AND #ManualB203) OR (NOT #ManualMode AND #AutoB203);
+   #AnyDose := #ReqB201 OR #ReqB202 OR #ReqB203;
+   #MultipleSources := (#ReqB201 AND #ReqB202) OR (#ReqB201 AND #ReqB203)
+       OR (#ReqB202 AND #ReqB203);
+   #SourceDry := (#ReqB201 AND NOT #B201Available) OR (#ReqB202 AND NOT #B202Available)
+       OR (#ReqB203 AND NOT #B203Available);
+
+   #AbortDose := NOT #StopOK OR #ModeChanged OR #B204High OR #SourceDry
+       OR #MultipleSources OR (#AnyDose AND #ReturnRequest);
+   #AbortReturn := NOT #StopOK OR #ModeChanged OR NOT #B204Available
+       OR #B201High OR #AnyDose;
+
+   #ValveB201 := #ReqB201 AND NOT #AbortDose;
+   #ValveB202 := #ReqB202 AND NOT #AbortDose;
+   #ValveB203 := #ReqB203 AND NOT #AbortDose;
+   #FeedPump := #ValveB201 OR #ValveB202 OR #ValveB203;
+   #ReturnPump := #ReturnRequest AND NOT #AbortReturn;
+
+   #AnalogOutput := 0;
+   IF #FeedPump THEN
+      #AnalogOutput := LIMIT(MN := 0, IN := #AnalogDemand, MX := 27648);
+   END_IF;
+END_FUNCTION
